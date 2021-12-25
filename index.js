@@ -8,12 +8,17 @@ app.set('vies', path.join(__dirname, 'views'));
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.get('/', (req, res) => {
-    res.render('home')
+    res.render('home', {
+        cotacao
+    })
 })
 
 app.get('/cotacao', (req, res) => {
-    console.log(req)
-    res.render('cotacao')
+    const { cotacao, quantidade } = req.query;
+    const conversao = convert.convert(cotacao, quantidade);
+    res.render('cotacao', {
+        cotacao, quantidade, conversao
+    })
 })
 
 app.listen(3000, err => {
