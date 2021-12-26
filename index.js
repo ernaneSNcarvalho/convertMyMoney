@@ -9,22 +9,31 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.get('/', (req, res) => {
     res.render('home', {
-        cotacao
+        cotacao: null
     })
 })
 
 app.get('/cotacao', (req, res) => {
     const { cotacao, quantidade } = req.query;
-    const conversao = convert.convert(cotacao, quantidade);
-    res.render('cotacao', {
-        cotacao, quantidade, conversao
-    })
+    if (cotacao && quantidade) {
+        const conversao = convert.convert(cotacao, quantidade);
+        res.render('cotacao', {
+            error: false,
+            cotacao: convert.toMoney(cotacao),
+            quantidade: convert.toMoney(quantidade),
+            conversao: convert.toMoney(conversao)
+        })
+    }else{
+        res.render('cotacao', {
+            error: 'Valores Invalidos'
+        })
+    }
 })
 
 app.listen(3000, err => {
-    if(err){
+    if (err) {
         console.log("Nao foi possivel iniciar")
-    }else{
+    } else {
         console.log('Convert my money esta on-line')
     }
 })
